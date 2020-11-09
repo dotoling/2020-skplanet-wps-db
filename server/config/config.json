@@ -1,0 +1,45 @@
+{
+  "development": {
+    "port": 3000,
+    "db": {
+      "host": "3.35.198.100",
+      "username": "root",
+      "password": "!ehdnjs(*&",
+      "database": "sanhak_dev",
+      "multipleStatements": true,
+      "timezone": "+09:00",
+      "dialectOptions": {
+        "dateStrings": true,
+        "typeCast": true
+      },
+      "dialect": "mysql",
+      "port": "3306",
+      "define": {
+        "charset": "utf8",
+        "collate": "utf8_general_ci"
+      }
+    },
+    "path": {
+      "index": "/../dist_dev"
+    }
+  },
+  "production": {
+    "port": 8100,
+    "db": {
+      "host": "127.0.0.1",
+      "port": "",
+      "user": "",
+      "username": "",
+      "password": "",
+      "database": "",
+      "multipleStatements": true,
+      "timezone": "+09:00",
+      "dialect": "mysql"
+    },
+    "path": {
+      "index": "/../dist"
+    }
+  }
+}
+
+
