@@ -27,11 +27,10 @@
     "port": 8100,
     "db": {
       "host": "127.0.0.1",
-      "port": "",
-      "user": "",
-      "username": "",
-      "password": "",
-      "database": "",
+      "port": "3306",
+      "username": "root",
+      "password": "!ehdnjs(*&",
+      "database": "sanhak_dev",
       "multipleStatements": true,
       "timezone": "+09:00",
       "dialect": "mysql"
