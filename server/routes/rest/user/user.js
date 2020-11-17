@@ -4,7 +4,7 @@ const config = require('../../../config/config.json')[process.env.NODE_ENV || 'd
 
 const curPos = async (req, res) => {
     console.log(req.body)
-
+    console.log("========================");
     res.send({
         result : true,
     })
