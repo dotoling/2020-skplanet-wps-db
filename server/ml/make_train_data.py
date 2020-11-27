@@ -8,11 +8,9 @@ from sklearn.preprocessing import LabelEncoder
 data_dir = Path('./data')
 data_dir.mkdir(parents=True, exist_ok=True)
 
-signal_data_path = Path('./data/signal_data.csv')
-train_data_path = Path('./data/train_data.csv')
 rssi_threshold = 40
 
-df_signal = pd.read_csv(signal_data_path, header=None)
+df_signal = pd.read_csv(Path('./data/signal_data.csv'), header=None)
 # rssi(%)를 string에서 int로 변환(%)
 df_signal[1] = pd.to_numeric(df_signal[1])
 df_signal = df_signal[df_signal[1] > rssi_threshold]
@@ -38,11 +36,16 @@ train_data = pd.DataFrame()
 for rp in np.unique(df_signal[4]):
     # 각 rp에 해당하는 signal 추출
     rp_data = df_signal[df_signal[4] == rp]
-    scan_dict = defaultdict(lambda : defaultdict(int).fromkeys(bssid_set, 0))
+    rp_num = rp_encoder.transform([rp_data.iloc[0][4]])[0]
 
+    # key : timestamp, value : bssid-rssi, rp
+    scan_dict = defaultdict(lambda : defaultdict(int).fromkeys(bssid_set, 0))
     for idx, signal in rp_data.iterrows():
         #         timestamp  bssid        rssi
         scan_dict[signal[2]][signal[0]] = signal[1]
+
+    for timestamp, scan_data in scan_dict.items():
+        scan_data['rp'] = rp_num
     
     train_data = train_data.append(pd.DataFrame.from_dict(scan_dict).transpose())
 
@@ -51,5 +54,5 @@ cols = train_data.columns.tolist()
 cols.sort()
 train_data = train_data[cols]
 
-train_data.to_csv(train_data_path, index=False)
+train_data.to_csv(Path('./data/train_data.csv'), index=False)
 train_data
