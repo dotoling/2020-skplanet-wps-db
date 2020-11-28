@@ -23,8 +23,11 @@ enc_rp.classes_ = np.load('./data/classes.npy', allow_pickle=True)
 enc_bssid = LabelEncoder()
 enc_bssid.classes_ = np.load('./data/features.npy', allow_pickle=True)
 
-lines = sys.stdin.readlines()
-dict_user = json.loads(lines[0])
+# detection용 유저 데이터를 잠시 학습용 데이터에서 가져옴.
+# 실제 유저 데이터를 가져오면 bssid를 rp_encoder에서 transform 해야됨
+# 데이터는 bssid(encoded)) : rssi 쌍의 dictionary -> dataframe으로 변환
+df_signal = pd.read_csv(Path('./data/train_data.csv'), header=None)
+dict_user = df_signal.sample().to_dict('records')[0]
 
 log.info(f'user data bssids : {len(dict_user)}')
 
