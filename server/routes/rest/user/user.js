@@ -24,11 +24,11 @@ const curRp = async (req, res) => {
         res.send({
             curRp : data.toString(),
             result : true,
-        }
-    );
+        });
+    });
     python.on('close', (code) => {});
-};
+}
 
 module.exports= {
     curPos, curRp
-};
+}
