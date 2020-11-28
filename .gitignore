@@ -22,3 +22,11 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# 머신러닝 관련 데이터
+# classes.npy - 클래스(rp) 저장
+# features.npy - feature(bssid) 저장
+# model_rdf, model_svm - 머신러닝 모델 덤프 뜬 파일
+# signal_data - 클라이언트에서 생성된 직후의 raw 데이터
+# train_data - 전처리 거친 학습용 데이터
+/server/ml/data
