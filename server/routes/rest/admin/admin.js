@@ -8,31 +8,32 @@ const addPos = async (req, res) => {
     const { pos_name, pos_rp } = req.body;
     const rp_data = [ 
         [
-            {b_ssid : "BSSID_1", strength : 100,},
-            {b_ssid : "BSSID_2", strength : 200,},
+            {bssid : "BSSID_1", rssi : 100,},
+            {bssid : "BSSID_2", rssi : 200,},
         ],
         [
-            {b_ssid : "BSSID_1", strength : 500,},
-            {b_ssid : "BSSID_2", strength : 4000,},
+            {bssid : "BSSID_1", rssi : 500,},
+            {bssid : "BSSID_2", rssi : 4000,},
         ]
     ];
+
+    /*
     try {
       const result = await models.db_pos.create({
         pos_name,
         pos_rp, // in test , fix it two
       });
       if (result) {
-        var rp_make_range = Array.from({length: pos_rp}, (v,i) => i);
-        console.log(rp_make_range);
-        await rp_make_range.map(async (rp_index) => {
+        var rp_arr = Array.from({length: pos_rp}, (v,i) => i);
+        await rp_arr.map(async (rp_index) => {
             const result2 = await models.db_rp.create({
                 dbPoId : result.id,
             });
-            var stren_make_range = Array.from({length : rp_data[rp_index].length}, (v,i) => i);
-            await stren_make_range.map(async (stren_index) => {
+            var rssi_arr = Array.from({length : rp_data[rp_index].length}, (v,i) => i);
+            await rssi_arr.map(async (stren_index) => {
                 const result3 = await models.db_strength.create({
-                    b_ssid : rp_data[rp_index][stren_index].b_ssid,
-                    strength : rp_data[rp_index][stren_index].strength,
+                    bssid : rp_data[rp_index][stren_index].bssid,
+                    rssi : rp_data[rp_index][stren_index].rssi,
                     dbRpId : result2.id,
                 });
             });
@@ -57,6 +58,7 @@ const addPos = async (req, res) => {
         error: 'DB error',
       });
     }
+    */
   };
   
   module.exports= {
