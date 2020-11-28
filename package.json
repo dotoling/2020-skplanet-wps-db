@@ -21,7 +21,6 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "dev": "npx nodemon ./server/app.js",
-    "python": "node ./server/scripts/run_python.js",
     "detect": "node ./server/scripts/detect_rp.js"
   },
   "eslintConfig": {
