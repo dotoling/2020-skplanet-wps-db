@@ -10,7 +10,8 @@ import joblib
 
 Path('./log').mkdir(parents=True, exist_ok=True)
 
-log.basicConfig(filename='./log/train.log', filemode='a+', level=log.INFO)
+handler = log.FileHandler('./log/train.log', 'a+', 'utf-8')
+log.basicConfig(handlers=[handler], level=log.INFO)
 log.info('----- '+__file__+' '+str(datetime.now())+' -----')
 
 df_all = pd.read_csv('./data/train_data.csv')

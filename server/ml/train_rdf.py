@@ -8,7 +8,8 @@ import logging as log
 from datetime import datetime
 import joblib
 
-log.basicConfig(filename='./log_train.log', filemode='a+', level=logging.INFO)
+handler = log.FileHandler('./log/train.log', 'a+', 'utf-8')
+log.basicConfig(handlers=[handler], level=log.INFO)
 log.info('----- '+__file__+' '+str(datetime.now())+' -----')
 
 df_all = pd.read_csv('./data/train_data.csv')
