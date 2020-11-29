@@ -1,11 +1,18 @@
 const { Op } = require('sequelize');
 const models = require('../../../models');
+//const db_checkIn = require('../../../models/db_checkIn');
 const config = require('../../../config/config.json')[process.env.NODE_ENV || 'development'];
 
 const curPos = async (req, res) => {
+    const curPosName =  "롯데백화점";
     res.send({
-        curPos : "롯데백화점",
+        curPos : curPosName,
         result : true,
+    })
+
+    // add check-in data in db_checkIn table
+    models.db_checkIn.create({
+        checkInPos : curPosName,
     })
 };
 
