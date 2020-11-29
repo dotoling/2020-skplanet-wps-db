@@ -16,6 +16,24 @@ const curPos = async (req, res) => {
     })
 };
 
+const checkInHistory = async ( req, res ) => {
+    try {
+        const history = await models.db_checkIn.findAll ({
+            attributes : ['id','checkInPos'],
+        })
+    
+        res.send({
+            history,
+            result : true,
+        })
+    } catch(error) {
+        res.send({
+            result : false,
+        })
+    }
+
+};
+
 const curRp = async (req, res) => {
     const wifi_data = [];
     const {spawn} = require('child_process');
@@ -37,5 +55,5 @@ const curRp = async (req, res) => {
 }
 
 module.exports= {
-    curPos, curRp
+    curPos, curRp, checkInHistory
 }
