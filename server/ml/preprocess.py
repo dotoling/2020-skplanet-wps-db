@@ -1,5 +1,4 @@
-import sys, json
-import os
+import os, sys, json
 import logging as log
 from pathlib import Path
 from datetime import datetime
@@ -15,13 +14,12 @@ sys.stderr.reconfigure(encoding='utf-8')
 lines = sys.stdin.readlines()
 
 user_wifi = json.loads(lines[0])
-lat, lon = sys.argv[1:3]
+pos_name, lat, lon = sys.argv[1:4]
 
 rssi_threshold = 40
 
 df_pos = pd.DataFrame.from_records(user_wifi)
 df_pos = df_pos[df_pos['rssi'] > rssi_threshold]
-pos_name = df_pos['position'][0]
 
 log_path = Path(__file__).parent / 'log'
 log_path.mkdir(parents=True, exist_ok=True)
@@ -42,6 +40,7 @@ for rp_name, df_rp in df_pos.groupby('rp'):
         dict_rp[wifi['timestamp']][wifi['bssid']] = wifi['rssi']
         dict_rp[wifi['timestamp']]['rp'] = wifi['rp']
 
+    # column name으로 bssid, rp를 남겨둬서 모델 생성 시 활용
     train_data = pd.DataFrame.from_dict(dict_rp).transpose()
 
     time = datetime.now().strftime("%Y%m%d-%H%M%S")

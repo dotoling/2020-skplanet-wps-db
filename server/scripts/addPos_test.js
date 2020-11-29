@@ -10,12 +10,13 @@ const { wifi_data, lat, lon } = {
   lat: '37.296429',
   lon: '126.971933'
 };
+var pos_name = wifi_data[0]['position'];
 
 var path = require('path');
 
 const {spawn} = require('child_process');
 const py_path = path.join(__dirname, '../ml/preprocess.py');
-const py = spawn('python', [py_path, lat, lon]);
+const py = spawn('python', [py_path, pos_name, lat, lon]);
 
 py.stdin.setDefaultEncoding('utf-8');
 py.stdout.setEncoding('utf-8');
@@ -25,11 +26,15 @@ py.stderr.on('data', data=>console.log(data));
 py.stdin.write(JSON.stringify(wifi_data));
 py.stdin.end();
 
-py.on('end', (code) => {
-  const py2_path = path.join(__dirname, '../ml/preprocess.py');
-  const py2 = spawn('python', [py2_path, lat, lon]);
+py.on('exit', (code) => {
+  const py2_path = path.join(__dirname, '../ml/train.py');
+  const py2 = spawn('python', [py2_path, pos_name]);
 
-  py2.on('end', (code) => {
+  py2.stdout.setEncoding('utf-8');
+  py2.stderr.setEncoding('utf-8');
+  py2.stdout.on('data', data=>console.log(data));
+  py2.stderr.on('data', data=>console.log(data));
+  py2.on('exit', (code) => {
     //res.send({ result: true });
     console.log('SUCCESS');
   })
