@@ -4,7 +4,7 @@ const express = require('express');
 const router = aa(express.Router());
 
 const {
-  curPos,
+  curPos
 } = require('./user');
 
 router.post('/', curPos);

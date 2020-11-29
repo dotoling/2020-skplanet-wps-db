@@ -5,17 +5,7 @@ const config = require('../../../config/config.json')[process.env.NODE_ENV || 'd
 
 const addPos = async (req, res) => {
     console.log(req.body);
-    const { pos_name, pos_rp } = req.body;
-    const rp_data = [ 
-        [
-            {bssid : "BSSID_1", rssi : 100,},
-            {bssid : "BSSID_2", rssi : 200,},
-        ],
-        [
-            {bssid : "BSSID_1", rssi : 500,},
-            {bssid : "BSSID_2", rssi : 4000,},
-        ]
-    ];
+    const { pos_name, wifi_data, lat, lon } = req.body;
 
     /*
     try {
@@ -62,5 +52,5 @@ const addPos = async (req, res) => {
   };
   
   module.exports= {
-      addPos,
+      addPos
   }
