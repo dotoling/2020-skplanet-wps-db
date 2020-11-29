@@ -1,12 +1,26 @@
+const { send } = require('process');
 const { Op } = require('sequelize');
 const models = require('../../../models');
 const config = require('../../../config/config.json')[process.env.NODE_ENV || 'development'];
 
-
 const addPos = async (req, res) => {
     console.log(req.body);
-    const { pos_name, wifi_data, lat, lon } = req.body;
+    const [ wifi_data, pos_name, lat, lon ] = req.body;
+    if(!wifi_data || !pos_name || !lat || !lon)
+        res.send({ result : false });
+    
+    const {spawn} = require('child_process');
+    const py = spawn('python', ['../../../ml/preprocess.py', pos_name, lat, lon]);
 
+    py.on('close', (code) => {
+      const py2 = spawn('python', ['../../../ml/train.py', pos_name, lat, lon]);
+
+      py2.on('close', (code) => {
+        res.send({ result: true });
+      })
+    });
+    py.stdin.write(JSON.stringify(wifi_data));
+    py.stdin.end();
     /*
     try {
       const result = await models.db_pos.create({

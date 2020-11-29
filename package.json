@@ -21,7 +21,8 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "dev": "npx nodemon ./server/app.js",
-    "detect": "node ./server/scripts/detect_rp.js"
+    "addpos": "node ./server/scripts/addpos_test.js",
+    "curpos": "node ./server/scripts/curpos_test.js"
   },
   "eslintConfig": {
     "extends": [

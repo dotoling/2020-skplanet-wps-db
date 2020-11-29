@@ -17,11 +17,14 @@ data_dir.mkdir(parents=True, exist_ok=True)
 
 rssi_threshold = 40
 
+# 클라이언트에서 데이터 받을 때는 따로 구현해야됨
 df_signal = pd.read_csv(Path('./data/signal_data.csv'), header=None)
+
 # rssi(%)를 string에서 int로 변환(%)
 df_signal[1] = pd.to_numeric(df_signal[1])
 df_signal = df_signal[df_signal[1] > rssi_threshold]
 
+position = df_signal.iloc[0,3][0]
 bssid_set = np.unique(df_signal[0])
 rp_set = np.unique(df_signal[4])
 timestamp_set = np.unique(df_signal[2])
