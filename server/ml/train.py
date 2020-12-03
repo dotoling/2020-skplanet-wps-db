@@ -31,7 +31,6 @@ log.info(f'{datetime.now()} ------- generating model for {pos_name} -------')
 df_all = pd.concat([pd.read_csv(path, encoding='utf-8') for path in data_path.glob('**/*') if path.is_file()]).fillna(0)
 # 'rp' column을 맨 뒤로 보내기
 df_all = df_all[[col for col in df_all.columns if col != 'rp'] + ['rp']]
-
 for rp in np.unique(df_all['rp']):
     log.info(f'{datetime.now()} [{rp}] scan cnt : {len(df_all[df_all["rp"] == rp])}')
 
@@ -58,7 +57,7 @@ for train_idx, test_idx in kf.split(X):
     acc_train = accuracy_score(y_train, clf.predict(X_train))
     acc_test = accuracy_score(y_test, clf.predict(X_test))
 
-    log.info(f'{datetime.now()} FOLD #{fold_n} TRAIN ACC: {acc_train} / TEST ACC: {acc_test}')
+    log.info(f'{datetime.now()} FOLD #{fold_n} TRAIN ACC: {acc_train:.2f} / TEST ACC: {acc_test:.2f}')
 
     fold_n += 1
 

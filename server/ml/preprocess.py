@@ -45,7 +45,7 @@ for rp_name, df_rp in df_pos.groupby('rp'):
 
     time = datetime.now().strftime("%Y%m%d-%H%M%S")
     train_data.to_csv(rp_path / f'{cur_time}.csv', index=False, encoding="utf-8")
-    log.info(f'{datetime.now()} train data generated for {pos_name} | {rp_name} | {cur_time}')
+    log.info(f'{datetime.now()} train data generated for {pos_name} {rp_name} {cur_time}')
 
 
 
