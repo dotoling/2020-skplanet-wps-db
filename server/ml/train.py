@@ -18,21 +18,26 @@ sys.stderr.reconfigure(encoding='utf-8')
 pos_name = sys.argv[1]
 
 base_path = Path(__file__).parent
+data_path = base_path / 'data' / pos_name
+model_path = base_path / 'model' / pos_name
+data_path.mkdir(parents=True, exist_ok=True)
+model_path.mkdir(parents=True, exist_ok=True)
+
 handler = log.FileHandler(base_path / 'log/train.log', 'a+', 'utf-8')
 log.basicConfig(handlers=[handler], level=log.INFO)
-log.info(f'{datetime.now()} generating model for {pos_name}')
+log.info(f'{datetime.now()} ------- generating model for {pos_name} -------')
 
-df_all = pd.DataFrame()
-pos_path = base_path / 'data' / pos_name
-train_datas = [pd.read_csv(path) for path in pos_path.glob('**/*') if path.is_file()]
+# data_path에 있는 모든 데이터파일을 dataframe으로 불러와 합치기 + 없는 값(NaN)을 0으로 채우기
+df_all = pd.concat([pd.read_csv(path, encoding='utf-8') for path in data_path.glob('**/*') if path.is_file()]).fillna(0)
+# 'rp' column을 맨 뒤로 보내기
+df_all = df_all[[col for col in df_all.columns if col != 'rp'] + ['rp']]
 
-# 맨 끝의 rp를 제외한 column(bssid) 모으기
-bssid_set = set()
-for data in train_datas:
-    bssid_set.update(data.columns[:-1])
+rp_encoder = LabelEncoder()
+rp_encoder.fit(np.unique(df_all['rp']))
 
-print(bssid_set)
-exit()    
+df_all['rp'] = rp_encoder.transform(df_all['rp'])
+
+np.save(model_path / 'classes.npy', rp_encoder.classes_)
 
 X = df_all.iloc[:,:-1].values
 y = df_all.iloc[:,-1].values
@@ -58,5 +63,5 @@ for train_idx, test_idx in kf.split(X):
 clf = RandomForestClassifier(n_estimators=100, n_jobs=-1, random_state=42)
 clf.fit(X, y)
 
-joblib.dump(clf, base_path / 'model' /  'model.plk')
+joblib.dump(clf, model_path /  'model.plk')
 log.info(f'{datetime.now()} model for {pos_name} generated successfully')
