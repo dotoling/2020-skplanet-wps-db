@@ -30,3 +30,4 @@ yarn-error.log*
 # signal_data - 클라이언트에서 생성된 직후의 raw 데이터
 # train_data - 전처리 거친 학습용 데이터
 /server/ml/data
+/server/ml/model
