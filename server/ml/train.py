@@ -32,6 +32,9 @@ df_all = pd.concat([pd.read_csv(path, encoding='utf-8') for path in data_path.gl
 # 'rp' column을 맨 뒤로 보내기
 df_all = df_all[[col for col in df_all.columns if col != 'rp'] + ['rp']]
 
+for rp in np.unique(df_all['rp']):
+    log.info(f'{datetime.now()} [{rp}] scan cnt : {len(df_all[df_all["rp"] == rp])}')
+
 rp_encoder = LabelEncoder()
 rp_encoder.fit(np.unique(df_all['rp']))
 
