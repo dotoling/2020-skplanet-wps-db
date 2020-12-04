@@ -2,7 +2,7 @@
   "development": {
     "port": 3000,
     "db": {
-      "host": "3.35.198.100",
+      "host": "localhost",
       "username": "root",
       "password": "!ehdnjs(*&",
       "database": "sanhak_dev",

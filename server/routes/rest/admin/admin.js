@@ -3,24 +3,45 @@ const { Op } = require('sequelize');
 const models = require('../../../models');
 const config = require('../../../config/config.json')[process.env.NODE_ENV || 'development'];
 
+const path = require('path');
+const fs = require('fs');
+
 const addPos = async (req, res) => {
-    console.log(req.body);
-    const [ wifi_data, pos_name, lat, lon ] = req.body;
-    if(!wifi_data || !pos_name || !lat || !lon)
-        res.send({ result : false });
-    
-    const {spawn} = require('child_process');
-    const py = spawn('python', ['../../../ml/preprocess.py', pos_name, lat, lon]);
+  res.send({result: "success"});
 
-    py.on('close', (code) => {
-      const py2 = spawn('python', ['../../../ml/train.py', pos_name, lat, lon]);
+  console.log(req.body);
+  const { wifi_data, lat, lon } = {
+    wifi_data: JSON.parse(req.body),
+    lat: '37.296429',
+    lon: '126.971933'
+  };
+  const pos_name = wifi_data[0]['position'];
 
-      py2.on('close', (code) => {
-        res.send({ result: true });
-      })
-    });
-    py.stdin.write(JSON.stringify(wifi_data));
-    py.stdin.end();
+  const {spawn} = require('child_process');
+  const py_path = path.join(__dirname, '../ml/preprocess.py');
+  const py = spawn('python', [py_path, pos_name, lat, lon]);
+
+  py.stdin.setDefaultEncoding('utf-8');
+  py.stdout.setEncoding('utf-8');
+  py.stderr.setEncoding('utf-8');
+  py.stdout.on('data', data=>console.log(data));
+  py.stderr.on('data', data=>console.log(data));
+  py.stdin.write(JSON.stringify(wifi_data));
+  py.stdin.end();
+
+  py.on('exit', (code) => {
+    const py2_path = path.join(__dirname, '../ml/train.py');
+    const py2 = spawn('python', [py2_path, pos_name]);
+
+    py2.stdout.setEncoding('utf-8');
+    py2.stderr.setEncoding('utf-8');
+    py2.stdout.on('data', data=>console.log(data));
+    py2.stderr.on('data', data=>console.log(data));
+    py2.on('exit', (code) => {
+      //res.send({ result: true });
+      console.log('SUCCESS');
+    })
+  });
     /*
     try {
       const result = await models.db_pos.create({
