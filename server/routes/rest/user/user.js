@@ -18,8 +18,27 @@ const curPos = async (req, res) => {
         });
     });
     python.on('close', (code) => {});
-}
+};
+
+const checkInHistory = async ( req, res ) => {
+    try {
+        const history = await models.db_checkIn.findAll ({
+            attributes : ['id','checkInPos'],
+        })
+    
+        res.send({
+            history,
+            result : true,
+        })
+    } catch(error) {
+	console.log(error);
+        res.send({
+            result : false,
+        })
+    }
+
+};
 
 module.exports= {
-    curPos
+    curPos, checkInHistory
 }
