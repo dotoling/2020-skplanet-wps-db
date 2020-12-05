@@ -16,6 +16,10 @@ const curPos = async (req, res) => {
             curRp : data.toString(),
             result : true,
         });
+
+	models.db_checkIn.create({
+       		checkInPos : data.toString(),
+    	});
     });
     python.on('close', (code) => {});
 };
