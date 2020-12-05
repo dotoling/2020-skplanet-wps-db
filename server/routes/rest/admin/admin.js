@@ -10,8 +10,9 @@ const addPos = async (req, res) => {
   res.send({result: "success"});
 
   console.log(req.body);
+  console.log(req.body);
   const { wifi_data, lat, lon } = {
-    wifi_data: JSON.parse(req.body),
+    wifi_data: req.body,
     lat: '37.296429',
     lon: '126.971933'
   };

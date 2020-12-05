@@ -3,7 +3,21 @@ const models = require('../../../models');
 const config = require('../../../config/config.json')[process.env.NODE_ENV || 'development'];
 
 const curPos = async (req, res) => {
-    const [wifi_data, lat, lon] = req.body;
+    //const [wifi_data, lat, lon] = req.body;
+    
+    const curPosName =  "롯데백화점";
+    res.send({
+        curPos : curPosName,
+        result : true,
+    });
+
+    // add check-in data in db_checkIn table
+    models.db_checkIn.create({
+        checkInPos : curPosName,
+    })
+
+
+    /*
     if(!wifi_data || !lat || !lon)
         res.send({ result : false });
 
@@ -22,6 +36,7 @@ const curPos = async (req, res) => {
     	});
     });
     python.on('close', (code) => {});
+    */
 };
 
 const checkInHistory = async ( req, res ) => {

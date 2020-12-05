@@ -12,8 +12,11 @@ const config = require("./config/config.json")[process.env.NODE_ENV || "developm
 const viewPath = config.path;
 
 var app = express();
-app.use(bodyParser.json());
+app.use(bodyParser.json({
+  limit: '200mb'
+}));
 app.use(bodyParser.urlencoded({
+  limit: '200mb',
   extended: false
 }));
 
