@@ -9,17 +9,15 @@ const fs = require('fs');
 const addPos = async (req, res) => {
   res.send({result: "success"});
 
-  console.log(req.body);
-  console.log(req.body);
   const { wifi_data, lat, lon } = {
-    wifi_data: req.body,
+    wifi_data: JSON.parse(req.body.wifi_data),
     lat: '37.296429',
     lon: '126.971933'
   };
   const pos_name = wifi_data[0]['position'];
 
   const {spawn} = require('child_process');
-  const py_path = path.join(__dirname, '../ml/preprocess.py');
+  const py_path = path.join(__dirname, '../../../ml/preprocess.py');
   const py = spawn('python', [py_path, pos_name, lat, lon]);
 
   py.stdin.setDefaultEncoding('utf-8');
@@ -31,7 +29,7 @@ const addPos = async (req, res) => {
   py.stdin.end();
 
   py.on('exit', (code) => {
-    const py2_path = path.join(__dirname, '../ml/train.py');
+    const py2_path = path.join(__dirname, '../../../ml/train.py');
     const py2 = spawn('python', [py2_path, pos_name]);
 
     py2.stdout.setEncoding('utf-8');
