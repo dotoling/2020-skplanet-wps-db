@@ -6,7 +6,7 @@ const path = require('path');
 const fs = require('fs');
 
 const curPos = async (req, res) => {
-    const [wifi_data, lat, lon] = req.body;
+    // const [wifi_data, lat, lon] = req.body;
     
     // const curPosName =  "롯데백화점";
     // res.send({
@@ -18,8 +18,8 @@ const curPos = async (req, res) => {
     // models.db_checkIn.create({
     //     checkInPos : curPosName,
     // })
-    if(!wifi_data || !lat || !lon)
-        res.send({ result : false });
+    // if(!wifi_data || !lat || !lon)
+        // res.send({ result : false });
 
     const {spawn} = require('child_process');
     const py_path = path.join(__dirname, '../../../ml/detect.py');
@@ -29,17 +29,18 @@ const curPos = async (req, res) => {
     py.stdin.setDefaultEncoding('utf-8');
     py.stdout.setEncoding('utf-8');
     py.stderr.setEncoding('utf-8');
+    py.stderr.on('data', data=>console.log(data));
     py.stdout.on('data', (data) => {
         result += data.toString();
     });
-    py.stdin.write(JSON.stringify(wifi_data));
+    py.stdin.write(JSON.stringify(req.body.wifi_data));
     py.stdin.end();
     
     py.on('exit', (code) => {
-        console.log(result);
+        console.log('send result : '+result);
         res.send({
             // "롯데백화점 ZARA" 형식으로 출력됨
-            curRp : result,
+            curPos : result,
             result : true,
         });
         models.db_checkIn.create({

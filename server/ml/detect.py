@@ -1,12 +1,13 @@
+import os, sys, json
+import logging as log
 from pathlib import Path
+from datetime import datetime
+from collections import defaultdict
+
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
 import joblib
 from sklearn.preprocessing import LabelEncoder
-from collections import defaultdict
-from datetime import datetime
-import logging as log
 
 sys.stdout.reconfigure(encoding='utf-8')
 sys.stderr.reconfigure(encoding='utf-8')
@@ -28,20 +29,17 @@ model_rdf = joblib.load(base_path / 'model' / pos_name / 'model_rdf.plk')
 model_svm = joblib.load(base_path / 'model' / pos_name / 'model_svm.plk')
 
 enc_rp = LabelEncoder()
-enc_rp.classes_ = np.load('./data/classes.npy', allow_pickle=True)
+enc_rp.classes_ = np.load(base_path / 'model' / pos_name / 'classes.npy', allow_pickle=True)
 
 enc_bssid = LabelEncoder()
-enc_bssid.classes_ = np.load('./data/features.npy', allow_pickle=True)
+enc_bssid.classes_ = np.load(base_path / 'model' / pos_name / 'features.npy', allow_pickle=True)
 
-lines = sys.stdin.readlines()
-dict_user = json.loads(lines[0])
-
-log.info(f'user data bssids : {len(dict_user)}')
+log.info(f'user data bssids : {len(user_wifi)}')
 
 # 유저 데이터 중 모델에 없는 bssid를 제외한 detection용 데이터
 # 실제 데이터 쓸때는 bssid_num이 아닌 string bssid를 사용
 dict_detection = defaultdict.fromkeys(enc_bssid.transform(enc_bssid.classes_), 0)
-for bssid_num, rssi in dict_user.items():
+for bssid_num, rssi in user_wifi:
     if bssid_num in dict_detection:
         dict_detection[bssid_num] = rssi
 
@@ -67,4 +65,4 @@ log.info(''.join([f'[{rp}] : {proba:.2f}, ' for rp, proba in sorted_rdf]))
 log.info(f'SVM : {result_svm}')
 log.info(''.join([f'[{rp}] : {proba:.2f}, ' for rp, proba in sorted_svm]))
 
-print(result_rdf)
+print(f'{pos_name} {result_rdf}')

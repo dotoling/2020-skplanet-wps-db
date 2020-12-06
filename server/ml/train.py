@@ -38,9 +38,13 @@ for rp in np.unique(df_all['rp']):
 rp_encoder = LabelEncoder()
 rp_encoder.fit(np.unique(df_all['rp']))
 
-df_all['rp'] = rp_encoder.transform(df_all['rp'])
+bssid_encoder = LabelEncoder()
+bssid_encoder.fit(np.unique(df_all.columns[:-1]))
 
 np.save(model_path / 'classes.npy', rp_encoder.classes_)
+np.save(model_path / 'features.npy', bssid_encoder.classes_)
+
+df_all['rp'] = rp_encoder.transform(df_all['rp'])
 
 X = df_all.iloc[:,:-1].values
 y = df_all.iloc[:,-1].values
@@ -82,7 +86,7 @@ for train_idx, test_idx in kf.split(X):
     acc_train = accuracy_score(y_train, clf.predict(X_train))
     acc_test = accuracy_score(y_test, clf.predict(X_test))
 
-    log.info(f'FOLD #{fold_n} TRAIN ACC: {acc_train} / TEST ACC: {acc_test}')
+    log.info(f'{datetime.now()} FOLD #{fold_n} TRAIN ACC: {acc_train} / TEST ACC: {acc_test}')
 
     fold_n += 1
 
