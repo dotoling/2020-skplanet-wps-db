@@ -11,8 +11,8 @@ from sklearn.preprocessing import LabelEncoder
 sys.stdin.reconfigure(encoding='utf-8')
 sys.stdout.reconfigure(encoding='utf-8')
 sys.stderr.reconfigure(encoding='utf-8')
-lines = sys.stdin.readlines()
 
+lines = sys.stdin.readlines()
 user_wifi = json.loads(lines[0])
 pos_name, lat, lon = sys.argv[1:4]
 

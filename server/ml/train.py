@@ -9,6 +9,7 @@ import pandas as pd
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import KFold
 from sklearn.ensemble import RandomForestClassifier
+from sklearn import svm
 from sklearn.metrics import accuracy_score
 import joblib
 
@@ -46,6 +47,7 @@ y = df_all.iloc[:,-1].values
 
 kf = KFold(n_splits=5, shuffle=True, random_state=12321)
 
+log.info(f'{datetime.now()} Random Forest Classifier :')
 fold_n = 1
 for train_idx, test_idx in kf.split(X):
     X_train, X_test = X[train_idx], X[test_idx]
@@ -65,5 +67,28 @@ for train_idx, test_idx in kf.split(X):
 clf = RandomForestClassifier(n_estimators=100, n_jobs=-1, random_state=42)
 clf.fit(X, y)
 
-joblib.dump(clf, model_path /  'model.plk')
+joblib.dump(clf, model_path / 'model_rdf.plk')
+log.info(f'{datetime.now()} model for {pos_name} generated successfully')
+
+log.info(f'{datetime.now()} SVM Classifier :')
+fold_n = 1
+for train_idx, test_idx in kf.split(X):
+    X_train, X_test = X[train_idx], X[test_idx]
+    y_train, y_test = y[train_idx], y[test_idx]
+    
+    clf = svm.SVC(kernel = 'rbf')
+    clf.fit(X_train, y_train)
+
+    acc_train = accuracy_score(y_train, clf.predict(X_train))
+    acc_test = accuracy_score(y_test, clf.predict(X_test))
+
+    log.info(f'FOLD #{fold_n} TRAIN ACC: {acc_train} / TEST ACC: {acc_test}')
+
+    fold_n += 1
+
+
+clf = svm.SVC(kernel = 'rbf', probability=True)
+clf.fit(X, y)
+
+joblib.dump(clf, model_path /  'model_svm.plk')
 log.info(f'{datetime.now()} model for {pos_name} generated successfully')

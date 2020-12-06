@@ -2,41 +2,45 @@ const { Op } = require('sequelize');
 const models = require('../../../models');
 const config = require('../../../config/config.json')[process.env.NODE_ENV || 'development'];
 
+const path = require('path');
+const fs = require('fs');
+
 const curPos = async (req, res) => {
-    //const [wifi_data, lat, lon] = req.body;
+    const [wifi_data, lat, lon] = req.body;
     
-    const curPosName =  "롯데백화점";
-    res.send({
-        curPos : curPosName,
-        result : true,
-    });
+    // const curPosName =  "롯데백화점";
+    // res.send({
+    //     curPos : curPosName,
+    //     result : true,
+    // });
 
     // add check-in data in db_checkIn table
     models.db_checkIn.create({
         checkInPos : curPosName,
     })
-
-
-    /*
     if(!wifi_data || !lat || !lon)
         res.send({ result : false });
 
     const {spawn} = require('child_process');
-    const python = spawn('python', ['../ml/detect.py', wifi_data]);
+    const py_path = path.join(__dirname, '../../../ml/detect.py');
+    const py = spawn('python', [py_path, "롯데백화점"]);
     
-    python.stdout.on('data', (data) => {
+    py.stdin.setDefaultEncoding('utf-8');
+    py.stdout.setEncoding('utf-8');
+    py.stderr.setEncoding('utf-8');
+    py.stdout.on('data', (data) => {
         res.send({
             // "롯데백화점 ZARA" 형식으로 출력됨
             curRp : data.toString(),
             result : true,
-        });
+    });
+    py.stdin.write(JSON.stringify(wifi_data));
+    py.stdin.end();
 
 	models.db_checkIn.create({
        		checkInPos : data.toString(),
     	});
     });
-    python.on('close', (code) => {});
-    */
 };
 
 const checkInHistory = async ( req, res ) => {
