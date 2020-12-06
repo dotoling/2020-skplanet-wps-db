@@ -54,15 +54,22 @@ proba_svm = model_svm.predict_proba(df_detection)[0]
 # 확률만 들어있는 기존의 리스트에다 tuple로 각각의 rp 이름을 붙여줌
 proba_rdf = [(enc_rp.inverse_transform([rp])[0], proba) for rp, proba in enumerate(proba_rdf)]
 proba_svm = [(enc_rp.inverse_transform([rp])[0], proba) for rp, proba in enumerate(proba_svm)]
+proba_all = [(proba_rdf[i][0], np.mean([proba_rdf[i][1],proba_svm[i][1]])) for i in range(len(proba_rdf))]
+result_all = enc_rp.classes_[np.argmax([p[1] for p in proba_all])]
 
 # key = 확률을 기준으로 정렬
 sorted_rdf = sorted(proba_rdf, key=lambda proba: proba[1], reverse=True)
 sorted_svm = sorted(proba_svm, key=lambda proba: proba[1], reverse=True)
+sorted_all = sorted(proba_all, key=lambda proba: proba[1], reverse=True)
 
 log.info(f'RDF : {result_rdf}')
 log.info(''.join([f'[{rp}] : {proba:.2f}, ' for rp, proba in sorted_rdf]))
 
 log.info(f'SVM : {result_svm}')
 log.info(''.join([f'[{rp}] : {proba:.2f}, ' for rp, proba in sorted_svm]))
+
+log.info(f'ALL : {result_svm}')
+log.info(''.join([f'[{rp}] : {proba:.2f}, ' for rp, proba in sorted_all]))
+
 
 print(f'{pos_name} {result_rdf}')

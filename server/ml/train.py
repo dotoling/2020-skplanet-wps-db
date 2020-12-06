@@ -3,6 +3,7 @@ import logging as log
 from pathlib import Path
 from datetime import datetime
 from collections import defaultdict
+from operator import add
 
 import numpy as np
 import pandas as pd
@@ -86,13 +87,30 @@ for train_idx, test_idx in kf.split(X):
     acc_train = accuracy_score(y_train, clf.predict(X_train))
     acc_test = accuracy_score(y_test, clf.predict(X_test))
 
-    log.info(f'{datetime.now()} FOLD #{fold_n} TRAIN ACC: {acc_train} / TEST ACC: {acc_test}')
+    log.info(f'{datetime.now()} FOLD #{fold_n} TRAIN ACC: {acc_train:.2f} / TEST ACC: {acc_test:.2f}')
 
     fold_n += 1
-
 
 clf = svm.SVC(kernel = 'rbf', probability=True)
 clf.fit(X, y)
 
 joblib.dump(clf, model_path /  'model_svm.plk')
 log.info(f'{datetime.now()} model for {pos_name} generated successfully')
+
+log.info(f'{datetime.now()} Mean of Classifiers :')
+fold_n = 1
+for train_idx, test_idx in kf.split(X):
+    X_train, X_test = X[train_idx], X[test_idx]
+    y_train, y_test = y[train_idx], y[test_idx]
+    
+    clf1 = RandomForestClassifier(n_estimators=100, n_jobs=-1, random_state=42)
+    clf1.fit(X_train, y_train)
+    clf2 = svm.SVC(kernel = 'rbf', probability=True)
+    clf2.fit(X_train, y_train)
+
+    acc_train = accuracy_score(y_train, np.argmax(list(map(add, clf1.predict_proba(X_train), clf2.predict_proba(X_train))), axis=1))
+    acc_test = accuracy_score(y_test, np.argmax(list(map(add, clf1.predict_proba(X_test), clf2.predict_proba(X_test))), axis=1))
+
+    log.info(f'{datetime.now()} FOLD #{fold_n} TRAIN ACC: {acc_train:.2f} / TEST ACC: {acc_test:.2f}')
+
+    fold_n += 1
